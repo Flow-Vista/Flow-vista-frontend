@@ -6,6 +6,8 @@ html, body {
     background: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);
 }
 
+
+
 /* Main container to cover full viewport */
 .main {
     min-height: 100vh;      /* Cover the entire viewport */
