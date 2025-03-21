@@ -1,0 +1,44 @@
+/* Sidebar with profile section */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background: linear-gradient(135deg, #2a7a8c, #0c3440);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.4);
+}
+
+.profile-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile-section img {
+    width: 80px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+}
+
+.profile-section h3 {
+    margin: 10px 0;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 15px 30px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+.sidebar ul li:hover {
+    background: #4caf50;
+    color: #fff;
+    transform: scale(1.05);
+}

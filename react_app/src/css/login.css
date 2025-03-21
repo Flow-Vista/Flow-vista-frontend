@@ -1,0 +1,110 @@
+/* Apply background to the whole page */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);
+}
+
+/* Main container to cover full viewport */
+.main {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Login container with consistent padding and spacing */
+.login-container {
+    width: 400px;
+    padding: 40px 30px;  /* Consistent padding (top-bottom and left-right) */
+    background: radial-gradient(circle, #2a7a8c, #0c3440);
+    color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+    transition: 0.3s;
+}
+
+/* Hover effect */
+.login-container:hover {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8);
+}
+
+/* Form group with consistent spacing */
+.form-group {
+    margin-bottom: 20px;
+    margin-left: 18px;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #ccc;
+}
+
+/* Input fields with consistent padding */
+input {
+    width: calc(100% - 20px);      /* Consistent padding inside input */
+    padding: 12px 10px;             /* Same padding on left and right */
+    border-radius: 5px;
+    border: none;
+    font-size: 14px;
+    color: #333;
+    box-sizing: border-box;
+}
+
+/* Input focus outline */
+input:focus {
+    outline: 2px solid #2c6b73;
+}
+
+/* Error and success message styling */
+.error {
+    color: #ff4d4d;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.success {
+    color: #4caf50;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+/* Button with consistent padding */
+.btn {
+    width: 364px;     /* Same width padding as input */
+    padding: 12px 10px;           /* Matching padding */
+    background: linear-gradient(to right, #2c6b73, #348f9e);
+    color: #fff;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: block;
+    margin: 0 auto;
+}
+
+/* Button hover effect */
+.btn:hover {
+    background: linear-gradient(to right, #1a4e57, #2c6b73);
+}
+
+/* Link styling */
+.register-link {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.register-link span {
+    color: #4caf50;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.register-link span:hover {
+    color: #3a9c45;
+    text-decoration: underline;
+}

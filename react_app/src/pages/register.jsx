@@ -11,6 +11,10 @@ const Register = () => {
     password2: "",
   });
 
+
+  
+
+
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
