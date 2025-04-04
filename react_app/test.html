@@ -1,0 +1,640 @@
+
+<style>
+    html, body {
+            height: 100%;
+            overflow: hidden; /* Prevents scrolling */
+        }
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5); 
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999; 
+    }
+    
+    .loading-icon {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #ccc;
+        border-top: 5px solid #007bff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .connection-card {
+        width: 70px;  /* Reduce width */
+        height: 70px; /* Reduce height */
+        font-size: 14px; /* Smaller text */
+        cursor: pointer;
+        border-radius: 10px;
+        padding: 10px;
+        
+    }
+    
+    .connection-card.selected {
+        background-color: rgb(6, 165, 6);
+        color: white;
+    }
+    
+    .bg-primary {
+        box-shadow: none !important;
+    }
+    #connectionTypesContainer {
+            overflow-y: auto;
+            max-height: 80vh; /* Makes the section scrollable */
+            padding: 20px;
+        }
+    
+        .card-div-sub {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s ease-in-out;
+            margin-bottom: 25px; /* Added spacing */
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    
+        .card-div-sub:hover {
+            transform: scale(1.05);
+        }
+    
+        .card-div-sub img {
+            border: solid 2px white;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+    
+        .btn-info {
+            background-color: #17a2b8;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+    
+        .btn-info:hover {
+            background-color: #138496;
+        }
+    
+        .btn-primary {
+            padding: 12px 20px;
+            border-radius: 5px;
+        }
+    
+        .buttons-section {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+    
+        .connection-wrapper {
+            padding: 20px;
+        }
+    
+    
+    
+    </style>
+    </head>
+    
+    <body>
+        <div class="container">
+            <!-- Tenant Form Section -->
+            <div id="tenantFormContainer" class="justify-content-center align-items-center" style="margin-left: 390px; padding-top: 130px; width: 1000px;">
+                <div class="col-md-6 col-lg-5">
+                    <div class="card border-0 rounded-4">
+                        <div class="card-header bg-primary text-white text-center rounded-top">
+                            <h2 class="mb-0">Add Tenant Details</h2>
+                        </div>
+                        <div class="card-body p-4">
+                            <form id="tenantForm" method="POST">
+                                <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+                                <div class="mb-3">
+                                    <label for="tenantName" class="form-label fw-semibold"><h3>Tenant Name</h3></label>
+                                    <input type="text" class="form-control rounded-3" id="tenantName" name="name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="tenantAbbr" class="form-label fw-semibold"><h3>Tenant Abbreviation</h3></label>
+                                    <input type="text" class="form-control rounded-3" id="tenantAbbr" name="abbr" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="accessToken" class="form-label fw-semibold"><h3>Access Token</h3></label>
+                                    <input type="password" class="form-control rounded-3" id="accessToken" name="accesstoken" required>
+                                </div>
+                                <div class="d-flex justify-content-center">
+                                    <button type="submit" class="btn btn-primary btn-lg rounded-3" style="width: 120px;">Submit</button>
+                                </div>
+                            </form>
+                            <div id="responseMessage" class="mt-3 text-center"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+    
+            <!-- Connection Types Section (Initially Hidden) -->
+            <!-- <div id="connectionTypesContainer" class="mt-5" style="display: none;">
+                <div class="mb-3">
+                    <button id="backButton" class="btn btn-light">
+                        ← Back
+                    </button>
+                </div>
+    
+                <h1 class="text-center">Select Connection Types</h1>
+                <div class="container">
+                  <div class="row justify-content-center" id="connection-card">
+    
+                  </div>
+                </div>
+                <div class="text-center" style="margin-top: 50px;">
+                    <button id="proceedButton" class="btn btn-primary" disabled 
+                        style="width: 120px; height: 50px; margin-right: 25px;">Proceed</button>
+                    <button id="loadDataBtn" class="btn btn-primary" 
+                        style="width: 120px; height: 50px;">Load Data</button>
+                </div>
+                
+                
+            </div> -->
+    
+            
+            <div id="connectionTypesContainer" class="mt-5" style="display: none;">
+                <div class="mb-3">
+                    <button id="backButton" class="btn btn-light">← Back</button>
+                </div>
+    
+                <h2 class="text-center">Modules details</h2>
+                <div class="container connection-wrapper">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-5 col-md-6 col-12 card-div-sub">
+                            <h3 class="trn">Sales</h3>
+                            <img src="{{ static('report_images/sales-n.png') }}" class="img-fluid">
+                            <p class="trn">Perhaps the most critical report for most buisness’s. Our sales module gives you deep insight into your companies sales with lists that can be sliced, deep and layered analytics customised to your firm and visuals that suit your companies presentation.</p>
+                            <a href="{{ static('report_images/sales-nnn.pdf') }}" class="portfolio-lightbox preview-link" title="Sales">
+                                <button type="button" class="btn btn-info trn">View the Report</button>
+                            </a>
+                        </div>
+    
+                        <div class="col-lg-5 col-md-6 col-12 card-div-sub">
+                            <h3 class="trn">Compliance - Card</h3>
+                            <img src="{{ static('report_images/compliance-n.png') }}" class="img-fluid">
+                            <p class="trn">A data point often overlooked by companies, “your own data” Compliance gives you a visual into your firms quanity and quality of data. the volume of records that have been actioned, interacted. You have customisable fields that give you insight into key data points that relevant and possibly missing in records with full visuals of progress / growth of your data quality over time</p>
+                            <a href="{{ static('report_images/compliance-n.pdf') }}" class="portfolio-lightbox preview-link" title="Compliance">
+                                <button type="button" class="btn btn-info trn">View the Report</button>
+                            </a>
+                        </div>
+    
+                        <div class="col-lg-5 col-md-6 col-12 card-div-sub">
+                            <h3 class="trn">Finance</h3>
+                            <img src="{{ static('report_images/finance-n.png') }}" class="img-fluid">
+                            <p class="trn">Falling as psrt of our operations package finance gives stakeholders a 360 view and deep drill downs into your business. In highly graphical terms get an understanding of : Your cash flow P and l Your analytics in % terms Budgets vs actual Deep insight into receivables Cash balances Integrates with measure sales, crm, accounting software</p>
+                            <a href="{{ static('report_images/finance-n.pdf') }}" class="portfolio-lightbox preview-link" title="Finance">
+                                <button type="button" class="btn btn-info trn">View the Report</button>
+                            </a>
+                        </div>
+    
+                        <div class="col-lg-5 col-md-6 col-12 card-div-sub">
+                            <h3 class="trn">Master</h3>
+                            <img src="{{ static('report_images/master-n.png') }}" class="img-fluid">
+                            <p class="trn">A snapshot view of all team activity based on your hierarchy. This report is broken down into activity and sales reports . At all times enjoy a drill down option allowing you a deep dive into numbers</p>
+                            <a href="{{ static('report_images/master-n.pdf') }}" class="portfolio-lightbox preview-link" title="Master">
+                                <button type="button" class="btn btn-info trn">View the Report</button>
+                            </a>
+                        </div>
+    
+                        <div class="col-lg-5 col-md-6 col-12 card-div-sub">
+                            <h3 class="trn">Scorecard</h3>
+                            <img src="{{ static('report_images/scorecard-n.png') }}" class="img-fluid">
+                            <p class="trn">One of master piece apps. A visually simple report that packs a punch. Scorecard measure the success of your team and company using simple traffic light colors and also one percentage. You can configure your own definition of success in our set up and view your companys progress over time and in one snap shot view. Scorecard gives insight into success but also “improvement”.</p>
+                            <a href="{{ static('report_images/scorecard-n.pdf') }}" class="portfolio-lightbox preview-link" title="Scorecard">
+                                <button type="button" class="btn btn-info trn">View the Report</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Connection Cards Section -->
+                <br>
+                <h2 class="text-center">Select your modules</h2>
+                <div class="container mt-4">
+                    <div class="row justify-content-center" id="connection-card">
+                        <!-- Dynamic Connection Cards will be inserted here -->
+                    </div>
+                </div>
+    
+                <!-- Buttons Section -->
+                <div class="buttons-section mt-5">
+                    <button id="proceedButton" class="btn btn-primary">Proceed</button>
+                    <button id="loadDataBtn" class="btn btn-primary" style="display: none;">Load Data</button>
+                </div>
+    
+               
+            </div>
+    
+    
+        </div>
+    
+        <script>
+    
+                $('#tenantForm').submit(function (event) {
+                    event.preventDefault();
+    
+                    let csrfToken = $("input[name='csrfmiddlewaretoken']").val(); 
+    
+                    let formData = JSON.stringify({
+                        name: $('#tenantName').val(),
+                        abbr: $('#tenantAbbr').val(),
+                        accesstoken: $('#accessToken').val()
+                    });
+    
+                    $('body').append('<div class="loading-overlay"><div class="loading-icon"></div></div>');
+    
+                    $.ajax({
+                        url: '{{ url("tenant-details") }}',  
+                        type: 'POST',
+                        contentType: 'application/json',  
+                        data: formData,
+                        headers: {
+                            'X-CSRFToken': csrfToken,
+                            'Accept': 'application/json'  
+                        },
+                        processData: false,
+                        beforeSend: function () {
+                            $('#tenantForm button[type="submit"]').prop('disabled', true);
+                        },
+                        success: function (response) {
+                            $('#responseMessage').html('<div class="alert alert-success">' + response.message + '</div>');
+    
+                            $('#tenantForm').hide();  
+                            $('#tenantFormContainer').css("display", "none"); 
+                            
+                            $('#connectionTypesContainer').show();
+    
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: response.message,
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'OK'
+                            });
+                        },
+                        error: function (xhr) {
+                            let errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : 'Error submitting form';
+                            $('#responseMessage').html('<div class="alert alert-danger">' + errorMessage + '</div>');
+    
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: errorMessage,
+                                confirmButtonColor: '#d33',
+                                confirmButtonText: 'OK'
+                            });
+                        },
+                        complete: function () {
+                            $('#tenantForm button[type="submit"]').prop('disabled', false);
+                            $('.loading-overlay').remove();
+                        }
+                    });
+                });
+    
+                    
+    
+                    $(document).ready(function () {
+                        let connectionTypeOptions = [
+                            "Sales",
+                            "Compliance",
+                            "Finance",
+                            "Master",
+                            "ROI",
+                            "Score card",
+                            "dummy"
+                        ];
+    
+                        let tableMappings = {
+                            "Sales": {
+                                tables_airbyte: ["deals", "deal_pipeline", "pipeline_deals", "owners", "owners_archived", "companies", "first_contacts", "second_contacts"],
+                                tables_dbt: ["dim_date", "dim_contacts", "dim_consultant", "dim_companies", "mapscompany", "dim_pipeline", "deals_contact", "deals_company", "fact_interview_pipeline", "fact_deals_stage", "fact_post_placement", "fact_post_placement_new", "fact_KPI_outcomes", "fact_consultant_summary_report"]
+                            },
+                            "Compliance": {
+                                tables_airbyte: ["deals", "owners", "owners_archived", "companies", "first_contacts", "second_contacts"],
+                                tables_dbt: ["dim_date", "dim_consultant", "dim_contacts", "dim_companies", "mapscompany", "deals_company", "gs_app_factcompliance"]
+                            },
+                            "Finance": {
+                                tables_airbyte: ["deals", "pipeline_deals", "owners", "owners_archived", "companies", "first_contacts", "second_contacts", "deal_pipeline"],
+                                tables_dbt: ["dim_date", "dim_contacts", "dim_consultant", "dim_companies", "dim_pipeline", "deals_company", "fact_interview_pipeline", "fact_deals_stage", "fact_post_placement", "deals_contact", "fact_post_placement_new", "receivable_collection_days", "sales_list", "fact_KPI_outcomes"]
+                            },
+                            "Master": {
+                                tables_airbyte: ["deals", "pipeline_deals", "owners", "owners_archived", "companies", "engagements_calls", "first_contacts", "second_contacts", "deal_pipeline"],
+                                tables_dbt: ["dim_date", "dim_contacts", "dim_consultant", "dim_companies", "dim_pipeline", "deals_company", "fact_interview_pipeline", "fact_deals_stage", "fact_post_placement", "fact_KPI_outcomes", "fact_master"]
+                            },
+                            "ROI": {
+                                tables_airbyte: ["deals", "owners", "owners_archived", "companies", "first_contacts", "second_contacts", "deal_pipeline"],
+                                tables_dbt: ["dim_date", "dim_contacts", "dim_consultant", "dim_companies", "mapscompany", "dim_pipeline", "deals_contact", "deals_company", "fact_interview_pipeline", "fact_deals_stage", "fact_post_placement", "fact_post_placement_new", "fact_KPI_outcomes", "fact_consultant_summary_report"]
+                            },
+                            "Score card": {
+                                tables_airbyte: ["deals", "deal_pipeline", "owners", "owners_archived", "companies", "engagements_calls"],
+                                tables_dbt: ["dim_date", "dim_consultant", "dim_companies", "dim_pipeline", "deals_company", "fact_interview_pipeline", "fact_score_card_report", "fact_score_card_ui_report", "fact_KPI_outcomes"]
+                            },
+                            "dummy": {
+                                tables_airbyte: ["owners"],
+                                tables_dbt: ["dim_date"]
+                    }
+                        };
+    
+                        let selectedConnections = [];
+    
+                        function renderConnectionTypes() {
+                            let container = $("#connection-card");
+                            container.empty();
+                            let row;
+    
+                            connectionTypeOptions.forEach((type, index) => {
+                                let formattedType = type.replace(/_/g, " ")
+                                    .split(" ")
+                                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                                    .join(" ");
+    
+                                if (index % 2 === 0) {
+                                    row = $('<div class="row mb-2 d-flex justify-content-center"></div>'); 
+                                    container.append(row);
+                                }
+    
+                                let card = `
+                                    <div class="col-md-5 d-flex justify-content-center">
+                                        <div class="card connection-card shadow-sm border-0 text-center d-flex align-items-center justify-content-center"
+                                            data-type="${type}" style="width: 80%; cursor: pointer;">
+                                            ${formattedType}
+                                        </div>
+                                    </div>`;
+    
+                                row.append(card);
+                            });
+                        }
+    
+                        function handleSelection(type) {
+                            if (selectedConnections.includes(type)) {
+                                selectedConnections = selectedConnections.filter(t => t !== type);
+                            } else {
+                                selectedConnections.push(type);
+                            }
+                            updateSelectionUI();
+                            $("#proceedButton").prop("disabled", selectedConnections.length === 0);
+                        }
+    
+                        function updateSelectionUI() {
+                            $(".connection-card").each(function () {
+                                let type = $(this).data("type");
+                                $(this).toggleClass("selected", selectedConnections.includes(type));
+                            });
+                        }
+    
+                        $(document).on("click", ".connection-card", function () {
+                            let type = $(this).data("type");
+                            handleSelection(type);
+                        });
+    
+                        $("#proceedButton").click(function () {
+                            $(this).prop("disabled", true).text("Processing...");
+                            if (selectedConnections.length === 0) {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'No Selection',
+                                    text: 'Please select at least one connection type.',
+                                    confirmButtonColor: '#3085d6',
+                                    confirmButtonText: 'OK'
+                                });
+                                return;
+                            }
+    
+                            // Show Loading Indicator
+                            $("body").append('<div class="loading-overlay"><div class="loading-icon"></div></div>');
+    
+                        var csrfToken = $("meta[name='csrf-token']").attr("content");
+                
+                                $.ajax({
+                                    url: '{{ url("create-destinations") }}',
+                                    type: "POST",
+                                    contentType: "application/json",
+                                    data: JSON.stringify({ con_type: selectedConnections }),
+                                    headers: { "X-CSRFToken": csrfToken },
+                                    beforeSend: function () {
+                                        $("#proceedButton").prop("disabled", true);
+                                    },
+                                    success: function (response) {
+                                        Swal.fire({
+                                            icon: "success",
+                                            title: "Success",
+                                            text: response.message || "Source, Destination, and Connection created successfully.",
+                                            confirmButtonColor: "#3085d6",
+                                            confirmButtonText: "OK"
+                                        }).then(() => {
+                                            if (response.success && response.redirect) {
+                                                window.location.href = response.redirect;
+                                            }
+                                        });
+                                        $("#proceedButton").text("Completed");
+                                        $("#loadDataBtn").show();
+                                    },
+                                    error: function (xhr) {
+                                        let errorMsg = "An error occurred while processing.";
+                                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                                            errorMsg = xhr.responseJSON.message;
+                                        }
+                                        Swal.fire({
+                                            icon: "error",
+                                            title: "Error",
+                                            text: errorMsg,
+                                            confirmButtonColor: "#d33",
+                                            confirmButtonText: "OK"
+                                        });
+                                    },
+                                    complete: function () {
+                                        $(".loading-overlay").remove();
+                                    }
+                                });
+                            });
+    
+                        renderConnectionTypes();
+    
+                        });
+                    
+    
+    
+    
+                $("#backButton").click(function () {
+                    $('#connectionTypesContainer').hide();  
+                    $('#tenantFormContainer').show();  
+                });
+    
+            
+    
+    
+    
+                $(document).ready(function () {
+                    // $("#loadDataBtn").click(function () {
+                    //     $("#loadDataBtn").prop("disabled", true); 
+    
+                    //     $("body").append('<div class="loading-overlay"><div class="loading-icon"></div></div>');
+                    //     var csrfToken = $("meta[name='csrf-token']").attr("content"); 
+    
+                    //     $.ajax({
+                    //         url: '{{ url("run-pipe") }}',
+                    //         type: "POST",
+                    //         contentType: "application/json",
+                    //         headers: { "X-CSRFToken": csrfToken },
+                    //         success: function (data) {
+                    //             if (data.success) {
+                    //                 Swal.fire({
+                    //                     icon: 'success',
+                    //                     title: 'Success',
+                    //                     text: 'Data loaded successfully.',
+                    //                     confirmButtonColor: '#3085d6',
+                    //                     confirmButtonText: 'OK'
+                    //                 }).then((result) => {
+                    //                     if (result.isConfirmed) {
+                    //                         window.location.href = '{{ url("master_view") }}'; 
+                    //                     }
+                    //                 });
+        
+    
+    
+                    //             } else {
+                    //                 Swal.fire({
+                    //                     icon: 'error',
+                    //                     title: 'Error',
+                    //                     text: data.message || 'Error occurred while loading data.',
+                    //                     confirmButtonColor: '#d33',
+                    //                     confirmButtonText: 'OK'
+                    //                 });
+                    //             }
+                    //         },
+                    //         error: function (xhr, status, error) {
+                    //             console.error("API Error:", error);
+                    //             Swal.fire({
+                    //                 icon: 'error',
+                    //                 title: 'Error',
+                    //                 text: 'Failed to trigger the pipeline. Please try again.',
+                    //                 confirmButtonColor: '#d33',
+                    //                 confirmButtonText: 'OK'
+                    //             });
+                    //         },
+                    //         complete: function () {
+                    //             $("#loadDataBtn").prop("disabled", false); 
+                    //             $(".loading-overlay").remove(); 
+                    //         }
+                    //     });
+                    // });
+    
+    
+    
+    
+                    $("#loadDataBtn").click(function () {
+                        $(this).prop("disabled", true);
+                        $("body").append('<div class="loading-overlay"><div class="loading-icon"></div></div>');
+                        var csrfToken = $("meta[name='csrf-token']").attr("content");
+                        
+                        $.ajax({
+                            url: '{{ url("run-pipe") }}',
+                            type: "POST",
+                            contentType: "application/json",
+                            headers: { "X-CSRFToken": csrfToken },
+                            success: function (data) {
+                                if (data.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Success',
+                                        text: 'Data loaded successfully.',
+                                        confirmButtonColor: '#3085d6',
+                                        confirmButtonText: 'OK'
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            window.location.href = '{{ url("master_view") }}';
+                                        }
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error',
+                                        text: data.message || 'Error occurred while loading data.',
+                                        confirmButtonColor: '#d33',
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("API Error:", error);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: 'Failed to trigger the pipeline. Please try again.',
+                                    confirmButtonColor: '#d33',
+                                    confirmButtonText: 'OK'
+                                });
+                            },
+                            complete: function () {
+                                $("#loadDataBtn").prop("disabled", false);
+                                $(".loading-overlay").remove();
+                            }
+                        });
+                    });
+                });
+    
+        </script>
+    
+
+
+
+<!-- 419 -->
+    
+    <!-- //     let csrfToken = $("meta[name='csrf-token']").attr("content");
+    
+    //     $.ajax({
+    //         url: '{{ url("create-destinations") }}', // Ensure this matches Django's URL pattern
+    //         type: "POST",
+    //         contentType: "application/json",
+    //         data: JSON.stringify({ con_type: selectedConnections }),
+    //         headers: { "X-CSRFToken": csrfToken },
+    //         beforeSend: function () {
+    //             $("#proceedButton").prop("disabled", true);
+    //         },
+    //         success: function (response) {
+    //             Swal.fire({
+    //                 icon: "success",
+    //                 title: "Success",
+    //                 text: response.message || "Source, Destination, and Connection created successfully.",
+    //                 confirmButtonColor: "#3085d6",
+    //                 confirmButtonText: "OK"
+    //             }).then(() => {
+    //                 if (response.success && response.redirect) {
+    //                     window.location.href = response.redirect; // Redirect to master_view
+    //                 }
+    //             });
+    //         },
+    //         error: function (xhr) {
+    //             let errorMsg = "An error occurred while processing.";
+    //             if (xhr.responseJSON && xhr.responseJSON.message) {
+    //                 errorMsg = xhr.responseJSON.message;
+    //             }
+    //             Swal.fire({
+    //                 icon: "error",
+    //                 title: "Error",
+    //                 text: errorMsg,
+    //                 confirmButtonColor: "#d33",
+    //                 confirmButtonText: "OK"
+    //             });
+    //         },
+    //         complete: function () {
+    //             $("#proceedButton").prop("disabled", false);
+    //             $(".loading-overlay").remove();
+    //         }
+    //     });
+    // }); -->
+    <!-- 462 -->
