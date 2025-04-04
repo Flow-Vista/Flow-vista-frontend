@@ -10,6 +10,7 @@ const Sidebar = () => {
       
 
       <ul>
+        <li onClick={() => navigate("/connection")}>➕ Add Connection</li>
         <li onClick={() => navigate("/dashboard")}>📊 Dashboard</li>
         <li onClick={() => navigate("/profile")}>👤 Profile</li>
         <li onClick={() => navigate("/settings")}>⚙️ Settings</li>

@@ -1,12 +1,13 @@
-/* Apply background to the whole page */
+
+
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    background: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);
+    /* background: linear-gradient(15deg, #13547a 0%, #80d0c7 100%); */
+    background: linear-gradient(15deg, rgb(19, 84, 122) 0%, rgb(128, 208, 199) 100%);
+    /* background-image: linear-gradient(to top, #0ba360 0%, #3cba92 100%); */
 }
-
-/* Main container to cover full viewport */
 .main {
     min-height: 100vh;
     display: flex;
@@ -14,10 +15,20 @@ html, body {
     align-items: center;
 }
 
-/* Login container with consistent padding and spacing */
+.register-container {
+    width: 400px;
+    padding: 30px;
+    background: radial-gradient(circle, #2a7a8c, #0c3440);
+    color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+    margin-left: 480px;
+}
+
+
 .login-container {
     width: 400px;
-    padding: 40px 30px;  /* Consistent padding (top-bottom and left-right) */
+    padding: 40px 30px; 
     background: radial-gradient(circle, #2a7a8c, #0c3440);
     color: #fff;
     border-radius: 10px;
@@ -25,15 +36,13 @@ html, body {
     transition: 0.3s;
 }
 
-/* Hover effect */
 .login-container:hover {
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8);
 }
 
-/* Form group with consistent spacing */
 .form-group {
     margin-bottom: 20px;
-    margin-left: 18px;
+    /* margin-left: 18px; */
 }
 
 label {

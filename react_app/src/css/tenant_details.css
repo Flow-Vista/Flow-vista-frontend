@@ -1,0 +1,73 @@
+/* Full page background gradient */
+
+  
+  .main {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .tenant-container {
+    width: 400px;
+    padding: 40px;
+    background: radial-gradient(circle, #2a7a8c, #0c3440);
+    color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+    text-align: center;
+    margin-left: 490px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  
+  label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  
+  input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 5px;
+    border: none;
+    font-size: 14px;
+    color: #333;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  input:focus {
+    outline: 2px solid #2c6b73;
+  }
+  
+  .btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(to right, #2c6b73, #348f9e);
+    color: #fff;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .btn:hover {
+    background: linear-gradient(to right, #1a4e57, #2c6b73);
+  }
+  
+  .error {
+    color: #ff4d4d;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  .success {
+    color: #4caf50;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
